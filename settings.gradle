@@ -1,0 +1,4 @@
+rootProject.name = "Contacts"
+include ':app'
+include ':domain'
+include ':data'

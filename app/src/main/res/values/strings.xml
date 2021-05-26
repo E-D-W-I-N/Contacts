@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Contacts</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="app_theme">App theme</string>
+    <string name="fab_add_contact">Add contact</string>
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
+    <string name="sort_by_first_name">Sort by first name</string>
+    <string name="sort_by_last_name">Sort by last name</string>
+    <string name="choose_app_theme">Choose app theme</string>
+</resources>
