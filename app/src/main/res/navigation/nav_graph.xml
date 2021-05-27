@@ -9,5 +9,21 @@
         android:id="@+id/contactsListFragment"
         android:name="com.edwin.contacts.presentation.contactsList.ContactsListFragment"
         android:label="Contact"
-        tools:layout="@layout/contacts_list_fragment" />
+        tools:layout="@layout/contacts_list_fragment">
+        <action
+            android:id="@+id/action_listFragment_to_detailsFragment"
+            app:destination="@id/contactDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactDetailsFragment"
+        android:name="com.edwin.contacts.presentation.contactDetails.ContactDetailsFragment"
+        android:label=""
+        tools:layout="@layout/contact_details_fragment">
+        <action
+            android:id="@+id/action_detailsFragment_to_listFragment"
+            app:destination="@id/contactsListFragment" />
+        <argument
+            android:name="contact"
+            app:argType="com.edwin.domain.model.Contact" />
+    </fragment>
 </navigation>

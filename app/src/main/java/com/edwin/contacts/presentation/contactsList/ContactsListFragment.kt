@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.edwin.contacts.R
 import com.edwin.contacts.databinding.ContactsListFragmentBinding
@@ -33,7 +34,7 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalCoroutinesApi
-class ContactsListFragment() : Fragment(R.layout.contacts_list_fragment) {
+class ContactsListFragment : Fragment(R.layout.contacts_list_fragment) {
 
     private val viewModel: ContactsListViewModel by viewModel()
     private val binding by viewBinding(ContactsListFragmentBinding::bind)
@@ -41,7 +42,8 @@ class ContactsListFragment() : Fragment(R.layout.contacts_list_fragment) {
     private lateinit var toggle: ActionBarDrawerToggle
 
     private val contactsListAdapter = ContactsListAdapter { contact ->
-        showSnackbar("Contact - ${contact.firstName} ${contact.lastName}")
+        val action = ContactsListFragmentDirections.actionListFragmentToDetailsFragment(contact)
+        findNavController().navigate(action)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
