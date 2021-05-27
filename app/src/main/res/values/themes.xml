@@ -14,6 +14,7 @@
     </style>
 
     <style name="Base.Theme.Contacts" parent="Theme.MaterialComponents.DayNight">
+        <item name="fontFamily">@font/roboto</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryDark</item>
     </style>
 

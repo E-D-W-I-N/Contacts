@@ -41,7 +41,6 @@ class ContactsListViewModel(
 
     fun obtainEvent(viewEvent: ContactsListEvent) = viewModelScope.launch {
         when (viewEvent) {
-            is ContactsListEvent.GetContacts -> getContacts()
             is ContactsListEvent.ChangeSortOrder -> preferences.updateSortOrder(viewEvent.sortOrder)
             is ContactsListEvent.ChangeSearchQuery -> searchQuery.value = viewEvent.searchQuery
             is ContactsListEvent.AddContacts -> addContacts(viewEvent.contacts)

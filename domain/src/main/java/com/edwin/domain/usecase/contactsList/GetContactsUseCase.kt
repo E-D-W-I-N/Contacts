@@ -4,8 +4,10 @@ import com.edwin.domain.ContactRepository
 import com.edwin.domain.model.Contact
 import com.edwin.domain.model.SortOrder
 import com.edwin.domain.usecase.UseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class GetContactsUseCase(private val contactRepository: ContactRepository) :
@@ -15,8 +17,8 @@ class GetContactsUseCase(private val contactRepository: ContactRepository) :
         contactRepository.getContacts(params.query, params.sortOrder).map {
             Result.success(it)
         }.catch { e ->
-            Result.failure<Exception>(e)
-        }
+            emit(Result.failure(e))
+        }.flowOn(Dispatchers.IO)
 
     data class Params(
         val query: String,
