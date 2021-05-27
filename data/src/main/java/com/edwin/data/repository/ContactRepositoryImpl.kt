@@ -13,11 +13,7 @@ class ContactRepositoryImpl(private val contactDao: ContactDao) : ContactReposit
     override fun getContacts(
         query: String,
         sortOrder: SortOrder
-    ): Flow<List<Contact>> = try {
-        contactDao.getContacts(query, sortOrder).toDomainFlow()
-    } catch (e: Exception) {
-        throw e
-    }
+    ): Flow<List<Contact>> = contactDao.getContacts(query, sortOrder).toDomainFlow()
 
     override fun insertContact(contact: Contact): Long {
         TODO("Not yet implemented")

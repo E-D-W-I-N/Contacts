@@ -4,9 +4,18 @@
     <string name="close">Close</string>
     <string name="app_theme">App theme</string>
     <string name="fab_add_contact">Add contact</string>
+    <string name="fab_edit_contact">Edit contact</string>
     <string name="search">Search</string>
     <string name="sort">Sort</string>
     <string name="sort_by_first_name">Sort by first name</string>
     <string name="sort_by_last_name">Sort by last name</string>
     <string name="choose_app_theme">Choose app theme</string>
+    <string name="icon_phone">Icon phone</string>
+    <string name="icon_chat">Icon chat</string>
+    <string name="icon_video_call">Icon video call</string>
+    <string name="icon_email">Icon Email</string>
+    <string name="favorite">Favorite</string>
+    <string name="more">More</string>
+    <string name="contact_name">%s %s</string>
+    <string name="coming_soon">This feature will be implemented soon</string>
 </resources>

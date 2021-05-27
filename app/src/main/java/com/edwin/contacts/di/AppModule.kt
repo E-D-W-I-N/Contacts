@@ -1,6 +1,7 @@
 package com.edwin.contacts.di
 
 import com.edwin.contacts.di.util.Constants
+import com.edwin.contacts.presentation.contactDetails.ContactDetailsViewModel
 import com.edwin.contacts.presentation.contactsList.ContactsListViewModel
 import com.edwin.data.database.RoomClient
 import com.edwin.data.preferences.PreferencesManager
@@ -51,6 +52,7 @@ object AppModule {
                 get()
             )
         }
+        viewModel { ContactDetailsViewModel(get()) }
     }
 
 }

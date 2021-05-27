@@ -2,9 +2,7 @@ package com.edwin.data.entity.util
 
 import com.edwin.data.entity.ContactDTO
 import com.edwin.domain.model.Contact
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 fun ContactDTO.toDomain(): Contact = Contact(
@@ -17,6 +15,4 @@ fun ContactDTO.toDomain(): Contact = Contact(
 
 fun List<ContactDTO>.toDomainList(): List<Contact> = map { it.toDomain() }
 
-fun Flow<List<ContactDTO>>.toDomainFlow(): Flow<List<Contact>> = map {
-    it.toDomainList()
-}.flowOn(Dispatchers.IO)
+fun Flow<List<ContactDTO>>.toDomainFlow(): Flow<List<Contact>> = map { it.toDomainList() }
