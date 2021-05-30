@@ -1,6 +1,6 @@
 package com.edwin.domain.model
 
-enum class NumberType {
+enum class PhoneType {
     MOBILE,
     WORK,
     HOME

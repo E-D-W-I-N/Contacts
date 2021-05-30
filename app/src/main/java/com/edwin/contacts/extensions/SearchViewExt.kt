@@ -1,4 +1,4 @@
-package com.edwin.contacts.presentation.contactsList.extensions
+package com.edwin.contacts.extensions
 
 import androidx.appcompat.widget.SearchView
 

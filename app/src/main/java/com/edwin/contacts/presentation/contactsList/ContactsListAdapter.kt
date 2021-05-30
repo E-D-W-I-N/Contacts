@@ -1,12 +1,13 @@
 package com.edwin.contacts.presentation.contactsList
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.edwin.contacts.R
 import com.edwin.contacts.databinding.ContactsListItemBinding
+import com.edwin.contacts.presentation.GlideImageLoader
 import com.edwin.domain.model.Contact
 
 class ContactsListAdapter(private val onClick: (Contact) -> Unit) :
@@ -34,9 +35,10 @@ class ContactsListAdapter(private val onClick: (Contact) -> Unit) :
         }
 
         fun bind(contact: Contact) = with(binding) {
-            contactImage.setImageResource(R.drawable.ic_launcher_background)
             firstName.text = contact.firstName
             lastName.text = contact.lastName
+            GlideImageLoader()
+                .loadImage(contactImage.context, contactImage, Uri.parse(contact.avatarPath))
         }
 
     }

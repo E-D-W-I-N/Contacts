@@ -8,20 +8,37 @@
     <fragment
         android:id="@+id/contactsListFragment"
         android:name="com.edwin.contacts.presentation.contactsList.ContactsListFragment"
-        android:label="Contact"
+        android:label="@string/contacts_list_title"
         tools:layout="@layout/contacts_list_fragment">
         <action
             android:id="@+id/action_listFragment_to_detailsFragment"
             app:destination="@id/contactDetailsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_addEditFragment"
+            app:destination="@id/contactAddEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactDetailsFragment"
         android:name="com.edwin.contacts.presentation.contactDetails.ContactDetailsFragment"
         android:label=""
         tools:layout="@layout/contact_details_fragment">
+        <argument
+            android:name="contactId"
+            app:argType="long" />
         <action
-            android:id="@+id/action_detailsFragment_to_listFragment"
-            app:destination="@id/contactsListFragment" />
+            android:id="@+id/action_detailsFragment_to_addEditFragment"
+            app:destination="@id/contactAddEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactAddEditFragment"
+        android:name="com.edwin.contacts.presentation.contactAddEdit.ContactAddEditFragment"
+        android:label=""
+        tools:layout="@layout/contact_add_edit_fragment">
+        <action
+            android:id="@+id/action_addEditFragment_to_listFragment"
+            app:destination="@id/contactsListFragment"
+            app:popUpTo="@id/contactsListFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="contact"
             app:argType="com.edwin.domain.model.Contact" />

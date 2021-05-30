@@ -3,10 +3,12 @@ package com.edwin.contacts
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.edwin.contacts.di.AppModule
+import com.edwin.contacts.presentation.GlideImageLoader
 import com.edwin.data.preferences.AppTheme
 import com.edwin.data.preferences.PreferencesManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import lv.chi.photopicker.ChiliPhotoPicker
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -33,5 +35,9 @@ class ContactsApplication : Application() {
                 AppModule.viewModelModule
             )
         }
+        ChiliPhotoPicker.init(
+            loader = GlideImageLoader(),
+            authority = "contact.image.fileprovider"
+        )
     }
 }

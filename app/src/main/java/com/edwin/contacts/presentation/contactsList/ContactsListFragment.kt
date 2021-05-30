@@ -16,18 +16,17 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.edwin.contacts.R
 import com.edwin.contacts.databinding.ContactsListFragmentBinding
+import com.edwin.contacts.extensions.makeDialog
+import com.edwin.contacts.extensions.onQueryTextChanged
 import com.edwin.contacts.extensions.showSnackbar
 import com.edwin.contacts.presentation.MainActivity
-import com.edwin.contacts.presentation.contactsList.extensions.onQueryTextChanged
 import com.edwin.contacts.presentation.contactsList.model.ContactsListAction
 import com.edwin.contacts.presentation.contactsList.model.ContactsListEvent
 import com.edwin.contacts.presentation.contactsList.model.ContactsListViewState
 import com.edwin.data.preferences.AppTheme
+import com.edwin.domain.exceptions.ContactException
 import com.edwin.domain.model.Contact
-import com.edwin.domain.model.NumberType
-import com.edwin.domain.model.Ringtone
 import com.edwin.domain.model.SortOrder
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -40,50 +39,28 @@ class ContactsListFragment : Fragment(R.layout.contacts_list_fragment) {
     private val binding by viewBinding(ContactsListFragmentBinding::bind)
     private lateinit var searchView: SearchView
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var itemDecorator: ContactsListItemDecorator
 
     private val contactsListAdapter = ContactsListAdapter { contact ->
-        val action = ContactsListFragmentDirections.actionListFragmentToDetailsFragment(contact)
+        val action = ContactsListFragmentDirections.actionListFragmentToDetailsFragment(contact.id)
         findNavController().navigate(action)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         setupNavToggle()
-
         val viewStates = viewModel.viewStates.flowWithLifecycle(lifecycle)
         viewStates.onEach { bindViewState(it) }.launchIn(lifecycleScope)
         val viewActions = viewModel.viewActions.flowWithLifecycle(lifecycle)
         viewActions.onEach { bindViewAction(it) }.launchIn(lifecycleScope)
 
         recyclerViewContacts.adapter = contactsListAdapter
+        itemDecorator = ContactsListItemDecorator(requireContext())
+        recyclerViewContacts.addItemDecoration(itemDecorator)
         floatingActionButton.setOnClickListener {
-            viewModel.obtainEvent(
-                ContactsListEvent.AddContacts(
-                    listOf(
-                        Contact(
-                            firstName = "Anya",
-                            lastName = "Pepega",
-                            phoneNumber = "111",
-                            numberType = NumberType.HOME,
-                            ringtone = Ringtone.MUSIC1
-                        ),
-                        Contact(
-                            firstName = "Pepega",
-                            lastName = "Clap",
-                            phoneNumber = "222",
-                            numberType = NumberType.HOME,
-                            ringtone = Ringtone.MUSIC1
-                        ),
-                        Contact(
-                            firstName = "KEKW",
-                            lastName = "ZULUL",
-                            phoneNumber = "333",
-                            numberType = NumberType.HOME,
-                            ringtone = Ringtone.MUSIC1
-                        )
-                    )
-                )
-            )
+            val action =
+                ContactsListFragmentDirections.actionListFragmentToAddEditFragment(Contact())
+            findNavController().navigate(action)
         }
 
         setHasOptionsMenu(true)
@@ -106,12 +83,24 @@ class ContactsListFragment : Fragment(R.layout.contacts_list_fragment) {
 
     private fun bindViewState(viewState: ContactsListViewState) = with(binding) {
         progressBar.isVisible = viewState.isLoading
+        when (viewState.sortOrder) {
+            SortOrder.BY_FIRST_NAME -> {
+                itemDecorator.submitWords(viewState.contacts.map { it.firstName })
+            }
+            SortOrder.BY_LAST_NAME -> {
+                itemDecorator.submitWords(viewState.contacts.map { it.lastName })
+            }
+        }
         contactsListAdapter.submitList(viewState.contacts)
     }
 
-    private fun bindViewAction(viewAction: ContactsListAction) {
-        when (viewAction) {
-            is ContactsListAction.ShowError -> showSnackbar("ERROR + ${viewAction.throwable}")
+    private fun bindViewAction(action: ContactsListAction) {
+        when (action) {
+            is ContactsListAction.ShowError -> {
+                if (action.throwable is ContactException.DatabaseError) {
+                    showSnackbar(getString(R.string.database_error))
+                }
+            }
         }
     }
 
@@ -149,10 +138,9 @@ class ContactsListFragment : Fragment(R.layout.contacts_list_fragment) {
 
     private fun showThemeDialog() {
         var checkedTheme = viewModel.appTheme.value.ordinal
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.choose_app_theme))
-            .setNeutralButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+        makeDialog(
+            title = R.string.choose_app_theme,
+            positiveCallback = {
                 val appTheme = AppTheme.values()[checkedTheme]
                 viewModel.obtainEvent(ContactsListEvent.SaveAppTheme(appTheme))
                 when (appTheme) {
@@ -160,12 +148,10 @@ class ContactsListFragment : Fragment(R.layout.contacts_list_fragment) {
                     AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
-                dialog.dismiss()
             }
-            .setSingleChoiceItems(AppTheme.valuesAsString(), checkedTheme) { _, which ->
-                checkedTheme = which
-            }
-            .show()
+        ).setSingleChoiceItems(AppTheme.valuesAsString(), checkedTheme) { _, which ->
+            checkedTheme = which
+        }.show()
     }
 
 }
