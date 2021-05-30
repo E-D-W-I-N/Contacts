@@ -20,16 +20,13 @@ interface ContactDao {
     @Query("SELECT * FROM contacts WHERE firstName LIKE :searchQuery OR lastName LIKE :searchQuery ORDER BY lastName")
     fun getContactsByLastName(searchQuery: String): Flow<List<ContactDTO>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertContact(contact: ContactDTO): Long
+    @Query("SELECT * FROM contacts WHERE id = :id")
+    fun getContactById(id: Long): Flow<ContactDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertContacts(contacts: List<ContactDTO>): List<Long>
+    suspend fun insertContact(contact: ContactDTO)
 
     @Delete
-    suspend fun deleteContact(contact: ContactDTO): Int
-
-    @Delete
-    suspend fun deleteContacts(contacts: List<ContactDTO>): Int
+    suspend fun deleteContact(contact: ContactDTO)
 
 }

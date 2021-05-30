@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Sticky header dimen-->
+    <dimen name="letter_size">40sp</dimen>
+    <dimen name="padding_offset">-2dp</dimen>
+    <dimen name="margin_start">80dp</dimen>
+</resources>

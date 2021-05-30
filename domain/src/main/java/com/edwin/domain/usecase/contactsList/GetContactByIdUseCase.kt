@@ -1,0 +1,21 @@
+package com.edwin.domain.usecase.contactsList
+
+import com.edwin.domain.ContactRepository
+import com.edwin.domain.model.Contact
+import com.edwin.domain.usecase.UseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+
+class GetContactByIdUseCase(private val contactRepository: ContactRepository) :
+    UseCase<Flow<Result<Contact>>, Long> {
+
+    override suspend fun run(params: Long): Flow<Result<Contact>> =
+        contactRepository.getContactById(params).map {
+            Result.success(it)
+        }.catch { e ->
+            emit(Result.failure(e))
+        }.flowOn(Dispatchers.IO)
+}

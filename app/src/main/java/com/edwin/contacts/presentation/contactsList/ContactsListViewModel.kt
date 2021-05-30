@@ -14,14 +14,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class ContactsListViewModel(
     private val getContactsUseCase: UseCase<Flow<Result<List<Contact>>>, Params>,
-    private val addContactsUseCase: UseCase<List<Long>, List<Contact>>,
     private val preferences: PreferencesManager
 ) : ViewModel() {
+
     private val _viewStates = MutableStateFlow(ContactsListViewState())
     val viewStates: StateFlow<ContactsListViewState> = _viewStates.asStateFlow()
 
@@ -43,7 +42,6 @@ class ContactsListViewModel(
         when (viewEvent) {
             is ContactsListEvent.ChangeSortOrder -> preferences.updateSortOrder(viewEvent.sortOrder)
             is ContactsListEvent.ChangeSearchQuery -> searchQuery.value = viewEvent.searchQuery
-            is ContactsListEvent.AddContacts -> addContacts(viewEvent.contacts)
             is ContactsListEvent.SaveAppTheme -> saveAppTheme(viewEvent.appTheme)
         }
     }
@@ -53,6 +51,7 @@ class ContactsListViewModel(
         combine(searchQuery, preferences.sortOrder) { query, sortOrder ->
             Pair(query, sortOrder)
         }.flatMapLatest { (query, sortOrder) ->
+            _viewStates.value = _viewStates.value.copy(sortOrder = sortOrder)
             getContactsUseCase.run(Params(query, sortOrder))
         }.collect { result ->
             result
@@ -63,15 +62,6 @@ class ContactsListViewModel(
                     _viewStates.value = _viewStates.value.copy(isLoading = false)
                     _viewActions.send(ContactsListAction.ShowError(it))
                 }
-        }
-    }
-
-    private fun addContacts(contacts: List<Contact>) = viewModelScope.launch {
-        _viewStates.value = _viewStates.value.copy(isLoading = true)
-        val ids = addContactsUseCase.run(contacts)
-        if (ids.isEmpty()) {
-            _viewStates.value = _viewStates.value.copy(isLoading = false)
-            _viewActions.send(ContactsListAction.ShowError(IOException()))
         }
     }
 
