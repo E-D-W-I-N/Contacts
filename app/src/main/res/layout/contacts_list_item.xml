@@ -14,7 +14,7 @@
         android:layout_marginStart="80dp"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-        tools:src="@drawable/ic_launcher_background" />
+        tools:src="@drawable/ic_person_with_background" />
 
     <TextView
         android:id="@+id/firstName"

@@ -4,12 +4,34 @@
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/gray</item>
         <item name="colorAccent">@color/blue</item>
+        <item name="colorOnSecondary">@color/blue</item>
         <item name="android:textColor">@color/blue</item>
 
         <!-- Snackbar -->
         <item name="snackbarStyle">@style/SnackbarDarkTheme</item>
         <item name="snackbarButtonStyle">@style/MaterialSnackbarTextButtonDarkTheme</item>
         <item name="snackbarTextViewStyle">@style/MaterialSnackbarTextViewDarkTheme</item>
+
+        <!-- EditText -->
+        <item name="textInputStyle">@style/textInputStyle</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="editTextStyle">@style/editTextStyle</item>
+    </style>
+
+    <style name="editTextStyle" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
+    <style name="textInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">?attr/colorAccent</item>
+        <item name="android:textColorHint">?attr/colorAccent</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
     </style>
 
     <style name="SnackbarDarkTheme" parent="Widget.MaterialComponents.Snackbar">

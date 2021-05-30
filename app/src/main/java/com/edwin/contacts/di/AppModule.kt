@@ -1,6 +1,7 @@
 package com.edwin.contacts.di
 
 import com.edwin.contacts.di.util.Constants
+import com.edwin.contacts.presentation.contactAddEdit.ContactAddEditViewModel
 import com.edwin.contacts.presentation.contactDetails.ContactDetailsViewModel
 import com.edwin.contacts.presentation.contactsList.ContactsListViewModel
 import com.edwin.data.database.RoomClient
@@ -9,7 +10,9 @@ import com.edwin.data.repository.ContactRepositoryImpl
 import com.edwin.domain.ContactRepository
 import com.edwin.domain.model.Contact
 import com.edwin.domain.usecase.UseCase
-import com.edwin.domain.usecase.contactsList.AddContactsUseCase
+import com.edwin.domain.usecase.contactsList.AddContactUseCase
+import com.edwin.domain.usecase.contactsList.DeleteContactUseCase
+import com.edwin.domain.usecase.contactsList.GetContactByIdUseCase
 import com.edwin.domain.usecase.contactsList.GetContactsUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -38,21 +41,35 @@ object AppModule {
             named(Constants.getContacts)
         ) { GetContactsUseCase(get()) }
 
-        single<UseCase<List<Long>, List<Contact>>>(
-            named(Constants.addContacts)
-        ) { AddContactsUseCase(get()) }
+        single<UseCase<Flow<Result<Contact>>, Long>>(
+            named(Constants.getContactById)
+        ) { GetContactByIdUseCase(get()) }
+
+        single<UseCase<Flow<Result<Unit>>, Contact>>(
+            named(Constants.addContact)
+        ) { AddContactUseCase(get()) }
+
+        single<UseCase<Flow<Result<Unit>>, Contact>>(
+            named(Constants.deleteContact)
+        ) { DeleteContactUseCase(get()) }
     }
 
     @ExperimentalCoroutinesApi
     val viewModelModule = module {
-        viewModel {
-            ContactsListViewModel(
-                get(named(Constants.getContacts)),
-                get(named(Constants.addContacts)),
-                get()
+        viewModel { ContactsListViewModel(get(named(Constants.getContacts)), get()) }
+        viewModel { (contactId: Long) ->
+            ContactDetailsViewModel(
+                contactId,
+                get(named(Constants.getContactById))
             )
         }
-        viewModel { ContactDetailsViewModel(get()) }
+        viewModel { (contact: Contact) ->
+            ContactAddEditViewModel(
+                contact,
+                get(named(Constants.addContact)),
+                get(named(Constants.deleteContact))
+            )
+        }
     }
 
 }
